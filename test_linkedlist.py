@@ -56,7 +56,6 @@ class LinkedListTest(unittest.TestCase):
         ll.append('C')
         assert ll.head.data == 'A'
         assert ll.tail.data == 'C'
-
     def test_prepend(self):
         ll = LinkedList()
         ll.prepend('C')
@@ -83,19 +82,24 @@ class LinkedListTest(unittest.TestCase):
         ll.delete('B')
         assert ll.head is None
         assert ll.tail is None
+        print('gets to assert error')
         with self.assertRaises(ValueError):
             ll.delete('D')
 
     def test_find(self):
+        print('starting 9')
         ll = LinkedList()
         ll.append('A')
         ll.append('B')
         ll.append('C')
+        print(ll)
         assert ll.find(lambda item: item == 'B') == 'B'
+        print(ll)
         assert ll.find(lambda item: item < 'B') == 'A'
+        print(ll)
         assert ll.find(lambda item: item > 'B') == 'C'
+        print(ll)
         assert ll.find(lambda item: item == 'D') is None
-
 
 if __name__ == '__main__':
     unittest.main()
