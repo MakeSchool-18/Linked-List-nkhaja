@@ -1,14 +1,10 @@
-#!python
-
-from __future__ import print_function
-
-
 class Node(object):
 
     def __init__(self, data):
         """Initialize this node with the given data"""
         self.data = data
         self.next = None
+        self.prev = None
 
     def __repr__(self):
         """Return a string representation of this node"""
@@ -36,7 +32,6 @@ class LinkedList(object):
         while current != None:
             result.append(current.data)
             current = current.next
-            # print('loop one')
         return result
 
     def is_empty(self):
@@ -66,6 +61,7 @@ class LinkedList(object):
             self.tail = new_node
         else:
             self.tail.next = new_node
+            self.tail.prev = new_node
             self.tail = new_node
 
 
@@ -81,40 +77,40 @@ class LinkedList(object):
         else:
             new_node = Node(item)
             new_node.next = self.head
+            self.head.prev = new_node
             self.head = new_node
 
 
     def delete(self, item):
         """Delete the given item from this linked list, or raise ValueError"""
-            current_node = self.head
-            previous_node = None
+        if self.is_empty():
+            raise valueError
 
-            if self.is_empty():
-                raise valueError
+        if self.head.data == item and self.length() == 1:
+            self.head = None
+            self.tail = None
 
-            if self.head.data == item and self.length() == 1:
-                self.head = None
-                self.tail = None
+        while current_node is not None:
 
-            while current_node is not None:
-
-                if current_node.data == item:
-                    #check if its the head
-                    if previous_node is not None:
-                        previous_node.next = current_node.next
-                        current_node.next = None #necessary in python?
-                    #check if its the tail
-                    elif current_node.next is None:
-                        previous_node.next = None
-                        self.tail = previous_node
-                    else:
-                        self.head = current_node.next
-                        current_node.next = None
-                    previous_node = current_node
-                    current_node = current_node.next
-            raise ValueError
-
-
+            if current_node.data == item:
+                #its somewhere in the middle
+                if previous_node is not None:
+                    previous_node.next = current_node.next
+                    current_node.next.prev = None
+                    current_node.next = None
+                    current_node.prev = None
+                #its the tail
+                elif current_node.next is None:
+                    previous_node.next = None
+                    current_node.prev = None
+                    self.tail = previous_node
+                #its the head
+                else:
+                    self.head = current_node.next
+                    current_node.next.prev = None
+                    current_node.next = None
+                previous_node = current_node
+                current_node = current_node.next
 
     def find(self, quality):
         """Return an item from this linked list satisfying the given quality"""
@@ -132,31 +128,3 @@ class LinkedList(object):
             while current is not None:
                 yield current
                 current = current.next
-
-
-def test_linked_list():
-    ll = LinkedList()
-    print(ll)
-    ll.append('A')
-    print(ll)
-    ll.append('B')
-    print(ll)
-    ll.append('C')
-    print(ll)
-    print('head: ' + str(ll.head))
-    print('tail: ' + str(ll.tail))
-    print(ll.length())
-
-    ll.delete('A')
-    print(ll)
-    ll.delete('C')
-    print(ll)
-    ll.delete('B')
-    print(ll)
-    print('head: ' + str(ll.head))
-    print('tail: ' + str(ll.tail))
-    print(ll.length())
-
-
-if __name__ == '__main__':
-    test_linked_list()
